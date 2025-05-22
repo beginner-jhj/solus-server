@@ -1,4 +1,10 @@
 // To run this test: node test_control_tower.js
+// IMPORTANT: This script now calls live Google Search APIs for
+// 'web_search' and 'research_task' intents.
+// Ensure you have GOOGLE_API_KEY (for general AI functions),
+// GOOGLE_SEARCH_API_KEY, and GOOGLE_SEARCH_ENGINE_ID
+// set in your environment (e.g., in a .env file loaded by your application).
+// Otherwise, these services might return error messages or fail.
 
 import { handleAssistantRequest } from "./lib/aiService.js";
 
