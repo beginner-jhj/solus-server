@@ -3,11 +3,20 @@ import { auth } from "../middleware/auth.js";
 
 import { sendMessageToScheduleAssistant } from "../lib/ai/scheduleAssistant.js";
 import { getEvents } from "../DB/schedule.js";
+import { handleUserChat } from "../lib/handleAiService.js";
 
 const router = express.Router();
 
-router.post("/chat", async (req, res, next) => {
-  
+router.post("/chat", auth,async (req, res, next) => {
+  try {
+    const { message,location } = req.body;
+    const response = await handleUserChat(message,{id:req.user.id,latitude:location.latitude,longitude:location.longitude});
+    res.status(200).json({
+      response,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post("/chat/schedule", auth, async (req, res, next) => {
@@ -23,7 +32,7 @@ router.post("/chat/schedule", auth, async (req, res, next) => {
         req.user.id,
         new Date().getFullYear(),
         month,
-        day
+        day,
       );
       schedules.push(...result);
       selectedDays.push({ year: new Date().getFullYear(), month, day });

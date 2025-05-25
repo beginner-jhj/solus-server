@@ -10,23 +10,48 @@ export async function addSchedule({userId,title,description,startTime,endTime,ev
     }
 }
 
-export async function getEvents(userId,year,month,day){
-    let query;
-    let args = [];
-    if(day === "all"){
-        query = "SELECT * FROM schedules WHERE user_id = ? AND year = ? AND month = ? AND complete = 0 ORDER BY day ASC";
-        args = [userId,year,month];
-    }else{
-        query = "SELECT * FROM schedules WHERE user_id = ? AND year = ? AND month = ? AND day = ? AND complete = 0";
-        args = [userId,year,month,day];
+export async function getEvents(
+    userId,
+    year,
+    month,
+    day,
+    timeCondition = null,             // "before" | "after" | "between" | null
+    timeReference = null,            // "HH:MM"
+    timeReferenceEnd = null          // "HH:MM" (only for "between")
+  ) {
+    let query = `
+      SELECT * FROM schedules 
+      WHERE user_id = ? AND year = ? AND month = ? AND complete = 0
+    `;
+    const args = [userId, year, month];
+  
+    if (day !== "all") {
+      query += " AND day = ?";
+      args.push(day);
     }
+  
+    if (timeCondition === "before" && timeReference) {
+      query += " AND start_time <= ?";
+      args.push(timeReference);
+    } else if (timeCondition === "after" && timeReference) {
+      query += " AND start_time >= ?";
+      args.push(timeReference);
+    } else if (timeCondition === "between" && timeReference && timeReferenceEnd) {
+      query += " AND start_time >= ? AND start_time <= ?";
+      args.push(timeReference, timeReferenceEnd);
+    }
+  
+    query += " ORDER BY day ASC, start_time ASC";
+  
     try {
-        const [rows] = await pool.execute(query,args);
-        return rows;
+      const [rows] = await pool.execute(query, args);
+      return rows;
     } catch (error) {
-        throw error;
+      throw error;
     }
-}
+  }
+  
+  
 
 export async function deleteEvent(id){
     const query = "DELETE FROM schedules WHERE id = ?";
