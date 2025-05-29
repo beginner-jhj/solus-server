@@ -4,13 +4,44 @@ import { auth } from "../middleware/auth.js";
 import { sendMessageToScheduleAssistant } from "../lib/ai/scheduleAssistant.js";
 import { getEvents } from "../DB/schedule.js";
 import { handleUserChat } from "../lib/handleAiService.js";
+import { handleChatting } from "../lib/handleChatting.js";
 
 const router = express.Router();
 
 router.post("/chat", auth,async (req, res, next) => {
   try {
     const { message,location } = req.body;
-    const response = await handleUserChat(message,{id:req.user.id,latitude:location.latitude,longitude:location.longitude});
+    const response = await handleChatting(message,{id:req.user.id,latitude:location.latitude,longitude:location.longitude,userProfileInfo:{
+      "likes": [
+        "coffee",
+        "jazz music",
+        "quiet mornings",
+        "sci-fi movies",
+        "coding at night"
+      ],
+      "dislikes": [
+        "crowded places",
+        "spicy food",
+        "waking up early",
+        "slow internet",
+        "long meetings"
+      ],
+      "hobbies": [
+        "painting",
+        "hiking on weekends",
+        "building side projects",
+        "photography",
+        "reading non-fiction"
+      ],
+      "personalityTraits": [
+        "introverted",
+        "detail-oriented",
+        "curious",
+        "organized",
+        "quick learner"
+      ]
+    }
+    });
     res.status(200).json({
       response,
     });
