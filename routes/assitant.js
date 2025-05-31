@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/chat", auth,async (req, res, next) => {
   try {
     const { message,location } = req.body;
-    const response = await handleChatting(message,{id:req.user.id,latitude:location.latitude,longitude:location.longitude,userProfileInfo:{
+    const response = await handleChatting(message,{id:req.user.id,latitude:location?.latitude,longitude:location?.longitude,userProfileInfo:{
       "likes": [
         "coffee",
         "jazz music",
@@ -52,7 +52,7 @@ router.post("/chat", auth,async (req, res, next) => {
 
 router.post("/chat/schedule", auth, async (req, res, next) => {
   try {
-    const { message, days, action, preferedLanguage } = req.body;
+    const { message, days, action } = req.body;
 
     let schedules = [];
     let selectedDays = [];
