@@ -7,8 +7,15 @@ const router = express.Router();
 
 router.post("/chat", auth,async (req, res, next) => {
   try {
-    const { message,location,userProfileInfo } = req.body;
-    const response = await handleChatting(message,{id:req.user.id,latitude:location?.latitude,longitude:location?.longitude,userProfileInfo:userProfileInfo});
+    const { message, location, userProfileInfo, chatHistory } = req.body;
+    console.log(req.body);
+    const response = await handleChatting(message, {
+      id: req.user.id,
+      latitude: location?.latitude,
+      longitude: location?.longitude,
+      userProfileInfo: userProfileInfo,
+      chatHistory: chatHistory || [] // Pass chat history to handleChatting
+    });
     if(response.determinedFormatType === "error"){
       return res.status(500).json({
         response,
