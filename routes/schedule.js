@@ -11,7 +11,7 @@ import {
 const router = express.Router();
 
 // Add event
-router.post("/add_event", auth, async (req, res) => {
+router.post("/add_event", auth, async (req, res,next) => {
   try {
     const {
       title,
@@ -47,7 +47,7 @@ router.post("/add_event", auth, async (req, res) => {
 });
 
 // Get events
-router.get("/get_events", auth, async (req, res) => {
+router.get("/get_events", auth, async (req, res,next) => {
   try {
     const { year, month, day } = req.query;
     const result = await getEvents(req.user.id, year, month, day);
@@ -62,7 +62,7 @@ router.get("/get_events", auth, async (req, res) => {
 });
 
 // Delete event
-router.delete("/delete_event", auth, async (req, res) => {
+router.delete("/delete_event", auth, async (req, res,next) => {
   try {
     const { id } = req.query;
     const result = await deleteEvent(id);
@@ -78,7 +78,7 @@ router.delete("/delete_event", auth, async (req, res) => {
 });
 
 // Complete event
-router.put("/complete_event", auth, async (req, res) => {
+router.put("/complete_event", auth, async (req, res,next) => {
   try {
     const { id } = req.query;
     const result = await completeEvent(id);
@@ -93,7 +93,7 @@ router.put("/complete_event", auth, async (req, res) => {
   }
 });
 
-router.put("/edit_event", auth, async (req, res) => {
+router.put("/edit_event", auth, async (req, res,next) => {
     try {
         const { id } = req.query;
         const {title,description,startTime,endTime,eventCategory} = req.body;
