@@ -8,7 +8,6 @@ const router = express.Router();
 router.post("/chat", auth,async (req, res, next) => {
   try {
     const { message, location, userProfileInfo, chatHistory } = req.body;
-    console.log(req.body);
     const response = await handleChatting(message, {
       id: req.user.id,
       latitude: location?.latitude,
