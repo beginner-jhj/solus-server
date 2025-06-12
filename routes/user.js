@@ -33,15 +33,15 @@ router.post("/save_survey_result", async (req, res, next) => {
     }
     const { id } = verifyJWT(accessToken);
 
-    const { likes, location, name, personalGoal, profileImage } = req.body;
+    const { likes, location, nickname, personalGoal, dailyRoutine } = req.body;
 
     const { success } = await saveSurveyResult({
       id,
       likes,
       location,
-      name,
+      nickname,
       personalGoal,
-      profileImage,
+      dailyRoutine,
     });
 
     if (success) {

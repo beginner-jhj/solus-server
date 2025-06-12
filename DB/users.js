@@ -37,10 +37,10 @@ export async function getUserProfileInfo(id) {
   }
 }
 
-export async function saveSurveyResult({ id, likes, location, name, personalGoal, profileImage }) {
-  const query = `UPDATE users SET likes = ?, location = ?, name = ?, personal_goal = ?, profile_image = ? WHERE id = ?`;
+export async function saveSurveyResult({ id, likes, location, nickname, personalGoal, dailyRoutine }) {
+  const query = `UPDATE users SET likes = ?, location = ?, nickname = ?, personal_goal = ?, daily_routine = ? WHERE id = ?`;
   try {
-    const [result] = await pool.execute(query, [JSON.stringify(likes), location, name, personalGoal, profileImage, id]);
+    const [result] = await pool.execute(query, [JSON.stringify(likes), location, nickname, personalGoal, dailyRoutine, id]);
     return { success: true, result };
   } catch (err) {
     console.error("Saving survey result failed:", err);
