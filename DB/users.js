@@ -47,3 +47,14 @@ export async function saveSurveyResult({ id, likes, location, nickname, personal
     return { success: false };
   }
 }
+
+export async function getUserSurveyResult(id) {
+  const query = "SELECT likes, location, nickname, personal_goal, daily_routine FROM users WHERE id=?";
+  try {
+    const [result] = await pool.execute(query, [id]);
+    return { success: true, result: result };
+  } catch (err) {
+    console.error("Query execution failed:", err);
+    return { success: false };
+  }
+}
