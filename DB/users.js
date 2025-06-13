@@ -58,3 +58,27 @@ export async function getUserSurveyResult(id) {
     return { success: false };
   }
 }
+
+export async function updateUserProfile({ id, likes, location, nickname, personalGoal, dailyRoutine }) {
+  try {
+    const [current] = await pool.execute(
+      "SELECT likes, location, nickname, personal_goal, daily_routine FROM users WHERE id=?",
+      [id]
+    );
+    if (current.length === 0) {
+      return { success: false };
+    }
+    const updatedLikes = likes !== undefined ? JSON.stringify(likes) : current[0].likes;
+    const updatedLocation = location !== undefined ? location : current[0].location;
+    const updatedNickname = nickname !== undefined ? nickname : current[0].nickname;
+    const updatedPersonalGoal = personalGoal !== undefined ? personalGoal : current[0].personal_goal;
+    const updatedDailyRoutine = dailyRoutine !== undefined ? dailyRoutine : current[0].daily_routine;
+
+    const query = `UPDATE users SET likes = ?, location = ?, nickname = ?, personal_goal = ?, daily_routine = ? WHERE id = ?`;
+    const [result] = await pool.execute(query, [updatedLikes, updatedLocation, updatedNickname, updatedPersonalGoal, updatedDailyRoutine, id]);
+    return { success: true, result };
+  } catch (err) {
+    console.error("Updating user profile failed:", err);
+    return { success: false };
+  }
+}
