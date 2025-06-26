@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.post("/chat", auth,async (req, res, next) => {
   try {
-    const { message, currentLocation, chatHistory } = req.body;
+    const { message, currentLocation, chatHistory, clientDate, clientTime } = req.body;
     const {success, result} = await getUserSurveyResult(req.user.id);
     if(!success){
       throw new Error("Failed to get user survey result.");
@@ -24,7 +24,9 @@ router.post("/chat", auth,async (req, res, next) => {
       latitude: currentLocation?.latitude,
       longitude: currentLocation?.longitude,
       userProfileInfo: userProfileInfo,
-      chatHistory: chatHistory || [] // Pass chat history to handleChatting
+      chatHistory: chatHistory || [], // Pass chat history to handleChatting
+      clientDate: clientDate,
+      clientTime: clientTime,
     });
     if(response.determinedFormatType === "error"){
       return res.status(500).json({
