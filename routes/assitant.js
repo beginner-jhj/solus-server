@@ -59,7 +59,7 @@ router.post("/get_suggestion",auth,async (req,res,next)=>{
     const response = await getSuggestionModelResponse(hasSchedule,schedule,userProfileInfo,clientTime,clientDate);
     console.log(response);
     return res.status(200).json({
-      response,
+      data:response,
     });
   } catch (error) {
     next(error);
