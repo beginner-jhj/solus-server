@@ -57,7 +57,6 @@ router.post("/get_suggestion",auth,async (req,res,next)=>{
       daily_outline: result[0].daily_outline,
     };
     const response = await getSuggestionModelResponse(hasSchedule,schedule,userProfileInfo,clientTime,clientDate);
-    console.log(response);
     return res.status(200).json({
       data:response,
     });
