@@ -29,6 +29,7 @@ router.post("/chat", auth,async (req, res, next) => {
       clientDate: clientDate,
       clientTime: clientTime,
     });
+    console.log(response.response);
     if(response.determinedFormatType === "error"){
       return res.status(500).json({
         response,
