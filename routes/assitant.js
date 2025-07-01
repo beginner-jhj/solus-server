@@ -1,8 +1,9 @@
 import express from "express";
 import { auth } from "../middleware/auth.js";
-import { getUserSurveyResult } from "../DB/users.js";
+import { getUserSurveyResult,saveSurveyResult } from "../DB/users.js";
 import { handleChatting } from "../lib/handleChatting.js";
 import { getSuggestionModelResponse } from "../lib/ai/suggestionModel.js";
+import { surveyModel } from "../lib/ai/surveyModel.js";
 
 const router = express.Router();
 
@@ -59,6 +60,37 @@ router.post("/get_suggestion",auth,async (req,res,next)=>{
     };
     const response = await getSuggestionModelResponse(hasSchedule,schedule,userProfileInfo,clientTime,clientDate);
     return res.status(200).json({
+      data:response,
+    });
+  } catch (error) {
+    next(error);
+  }
+})
+
+router.post("/survey",auth,async (req,res,next)=>{
+  try {
+    const {surveyHistory,nextStep,structuredAnswerHistory} = req.body;
+    const response = await surveyModel(surveyHistory,nextStep,structuredAnswerHistory);
+    if(response.surveyDone && response.finalStructuredAnswer){
+      const {nickname,likes,location,personalGoal,dailyRoutine} = response.finalStructuredAnswer;
+      const {success} = await saveSurveyResult({
+        id: req.user.id,
+        nickname,
+        likes,
+        location,
+        personalGoal,
+        dailyRoutine,
+      });
+      if(!success){
+        throw new Error("Failed to save survey result.");
+      }
+      return res.status(200).json({
+        success:true,
+        data:response,
+      });
+    }
+    return res.status(200).json({
+      success:true,
       data:response,
     });
   } catch (error) {
