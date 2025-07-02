@@ -1,5 +1,5 @@
 import express from "express";
-import { getUserProfileInfo, saveSurveyResult } from "../DB/users.js";
+import { getUserProfileInfo, saveSurveyResult, getUserSurveyResult } from "../DB/users.js";
 import { verifyJWT } from "../lib/token.js";
 
 const router = express.Router();
@@ -16,9 +16,30 @@ router.get("/get_profile", async (req, res, next) => {
       res.status(200).json({
         profileImage: result[0].profile_image,
         name: result[0].name,
+        createdAt: result[0].created_at,
       });
     } else {
       throw new Error("Gettting profileImage failed.");
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/get_survey_result", async (req, res, next) => {
+  try {
+    const accessToken = req.headers.authorization.split(" ")[1];
+    if (!accessToken) {
+      throw new Error("Access token not found.");
+    }
+    const { id } = verifyJWT(accessToken);
+    const { success, result } = await getUserSurveyResult(id);
+    if (success) {
+      res.status(200).json({
+        surveyResult: result,
+      });
+    } else {
+      throw new Error("Gettting survey result failed.");
     }
   } catch (err) {
     next(err);

@@ -17,15 +17,22 @@ export async function getEvents(
     day,
     timeCondition = null,             // "before" | "after" | "between" | null
     timeReference = null,            // "HH:MM"
-    timeReferenceEnd = null          // "HH:MM" (only for "between")
+    timeReferenceEnd = null,// "HH:MM" (only for "between")
+    includeComplete = false,
+    getAll = false      
   ) {
     let query = `
       SELECT * FROM schedules 
-      WHERE user_id = ? AND year = ? AND month = ? AND complete = 0
+      WHERE user_id = ? AND year = ? AND month = ? AND complete = ?
     `;
-    const args = [userId, year, month];
-  
-    if (day !== "all") {
+    let args = [userId, year, month, includeComplete ? 1 : 0];
+
+    if(getAll){
+        query = "SELECT * FROM schedules WHERE user_id = ?";
+        args = [userId];
+    }
+
+    if (day !== "all" && getAll === false) {
       query += " AND day = ?";
       args.push(day);
     }
@@ -40,7 +47,7 @@ export async function getEvents(
       query += " AND start_time >= ? AND start_time <= ?";
       args.push(timeReference, timeReferenceEnd);
     }
-  
+
     query += " ORDER BY day ASC, start_time ASC";
   
     try {

@@ -49,8 +49,8 @@ router.post("/add_event", auth, async (req, res,next) => {
 // Get events
 router.get("/get_events", auth, async (req, res,next) => {
   try {
-    const { year, month, day } = req.query;
-    const result = await getEvents(req.user.id, year, month, day);
+    const { year, month, day,timeCondition,timeReference,timeReferenceEnd,includeComplete,getAll } = req.query;
+    const result = await getEvents(req.user.id, year, month, day,timeCondition,timeReference,timeReferenceEnd,includeComplete === "true",getAll === "true");
 
     res.status(200).json({
       success: true,
