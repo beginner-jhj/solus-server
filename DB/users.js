@@ -38,7 +38,7 @@ export async function deleteAccount(id) {
 }
 
 export async function getUserProfileInfo(id) {
-  const query = "SELECT profile_image, name, created_at FROM users WHERE id=?";
+  const query = "SELECT profile_image, name, created_at, nickname FROM users WHERE id=?";
   try {
     const [result] = await pool.execute(query, [id]);
     return { success: true, result: result };

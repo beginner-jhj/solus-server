@@ -17,6 +17,7 @@ router.get("/get_profile", async (req, res, next) => {
         profileImage: result[0].profile_image,
         name: result[0].name,
         createdAt: result[0].created_at,
+        nickname: result[0].nickname,
       });
     } else {
       throw new Error("Gettting profileImage failed.");
