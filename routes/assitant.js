@@ -73,6 +73,7 @@ router.post("/survey",auth,async (req,res,next)=>{
   try {
     const {surveyHistory,nextStep,structuredAnswerHistory} = req.body;
     const response = await surveyModel(surveyHistory,nextStep,structuredAnswerHistory);
+    
     if(response.surveyDone && response.finalStructuredAnswer){
       const {nickname,likes,location,personalGoal,dailyRoutine,preferedLanguage} = response.finalStructuredAnswer;
       const {success} = await saveSurveyResult({
