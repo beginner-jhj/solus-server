@@ -26,6 +26,17 @@ export async function loginUser({ email, name, profileImage }) {
   }
 }
 
+export async function deleteAccount(id) {
+  const query = "DELETE FROM users WHERE id = ?";
+  try {
+    const [result] = await pool.execute(query, [id]);
+    return { success: true, result };
+  } catch (err) {
+    console.error("Deleting user failed:", err);
+    return { success: false };
+  }
+}
+
 export async function getUserProfileInfo(id) {
   const query = "SELECT profile_image, name, created_at FROM users WHERE id=?";
   try {
@@ -68,7 +79,7 @@ export async function updateUserProfile({ id, likes, location, nickname, persona
     if (current.length === 0) {
       return { success: false };
     }
-    const updatedLikes = likes !== undefined ? JSON.stringify(likes) : current[0].likes;
+    const updatedLikes = likes !== undefined ? likes : current[0].likes;
     const updatedLocation = location !== undefined ? location : current[0].location;
     const updatedNickname = nickname !== undefined ? nickname : current[0].nickname;
     const updatedPersonalGoal = personalGoal !== undefined ? personalGoal : current[0].personal_goal;

@@ -1,5 +1,5 @@
 import express from "express";
-import { getUserProfileInfo, saveSurveyResult, getUserSurveyResult } from "../DB/users.js";
+import { getUserProfileInfo, saveSurveyResult, getUserSurveyResult,deleteAccount,updateUserProfile } from "../DB/users.js";
 import { verifyJWT } from "../lib/token.js";
 
 const router = express.Router();
@@ -66,9 +66,54 @@ router.post("/save_survey_result", async (req, res, next) => {
     });
 
     if (success) {
-      res.status(200).json({ message: "Survey result saved successfully." });
+      res.status(200).json({ success:true,message: "Survey result saved successfully." });
     } else {
       throw new Error("Failed to save survey result.");
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete("/delete_account", async (req, res, next) => {
+  try {
+    const accessToken = req.headers.authorization?.split(" ")[1];
+    if (!accessToken) {
+      throw new Error("Access token not found.");
+    }
+    const { id } = verifyJWT(accessToken);
+    const { success } = await deleteAccount(id);
+    if (success) {
+      res.status(200).json({ success:true, message: "User deleted successfully." });
+    } else {
+      throw new Error("Failed to delete user.");
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put("/update_user_profile", async (req, res, next) => {
+  try {
+    const accessToken = req.headers.authorization?.split(" ")[1];
+    if (!accessToken) {
+      throw new Error("Access token not found.");
+    }
+    const { id } = verifyJWT(accessToken);
+    const { likes, location, nickname, personal_goal, daily_routine,prefered_language } = req.body;
+    const { success } = await updateUserProfile({
+      id,
+      likes,
+      location,
+      nickname,
+      personalGoal:personal_goal,
+      dailyRoutine:daily_routine,
+      preferedLanguage:prefered_language,
+    });
+    if (success) {
+      res.status(200).json({ success:true, message: "User profile updated successfully." });
+    } else {
+      throw new Error("Failed to update user profile.");
     }
   } catch (err) {
     next(err);
