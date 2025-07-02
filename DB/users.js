@@ -37,10 +37,10 @@ export async function getUserProfileInfo(id) {
   }
 }
 
-export async function saveSurveyResult({ id, likes, location, nickname, personalGoal, dailyRoutine }) {
-  const query = `UPDATE users SET likes = ?, location = ?, nickname = ?, personal_goal = ?, daily_routine = ? WHERE id = ?`;
+export async function saveSurveyResult({ id, likes, location, nickname, personalGoal, dailyRoutine,preferedLanguage }) {
+  const query = `UPDATE users SET likes = ?, location = ?, nickname = ?, personal_goal = ?, daily_routine = ?, prefered_language = ? WHERE id = ?`;
   try {
-    const [result] = await pool.execute(query, [likes, location, nickname, personalGoal, dailyRoutine, id]);
+    const [result] = await pool.execute(query, [likes, location, nickname, personalGoal, dailyRoutine,preferedLanguage, id]);
     return { success: true, result };
   } catch (err) {
     console.error("Saving survey result failed:", err);
@@ -49,7 +49,7 @@ export async function saveSurveyResult({ id, likes, location, nickname, personal
 }
 
 export async function getUserSurveyResult(id) {
-  const query = "SELECT likes, location, nickname, personal_goal, daily_routine FROM users WHERE id=?";
+  const query = "SELECT likes, location, nickname, personal_goal, daily_routine,prefered_language FROM users WHERE id=?";
   try {
     const [result] = await pool.execute(query, [id]);
     return { success: true, result: result };
@@ -59,10 +59,10 @@ export async function getUserSurveyResult(id) {
   }
 }
 
-export async function updateUserProfile({ id, likes, location, nickname, personalGoal, dailyRoutine }) {
+export async function updateUserProfile({ id, likes, location, nickname, personalGoal, dailyRoutine,preferedLanguage }) {
   try {
     const [current] = await pool.execute(
-      "SELECT likes, location, nickname, personal_goal, daily_routine FROM users WHERE id=?",
+      "SELECT likes, location, nickname, personal_goal, daily_routine,prefered_language FROM users WHERE id=?",
       [id]
     );
     if (current.length === 0) {
@@ -73,9 +73,10 @@ export async function updateUserProfile({ id, likes, location, nickname, persona
     const updatedNickname = nickname !== undefined ? nickname : current[0].nickname;
     const updatedPersonalGoal = personalGoal !== undefined ? personalGoal : current[0].personal_goal;
     const updatedDailyRoutine = dailyRoutine !== undefined ? dailyRoutine : current[0].daily_routine;
+    const updatedPreferedLanguage = preferedLanguage !== undefined ? preferedLanguage : current[0].prefered_language;
 
-    const query = `UPDATE users SET likes = ?, location = ?, nickname = ?, personal_goal = ?, daily_routine = ? WHERE id = ?`;
-    const [result] = await pool.execute(query, [updatedLikes, updatedLocation, updatedNickname, updatedPersonalGoal, updatedDailyRoutine, id]);
+    const query = `UPDATE users SET likes = ?, location = ?, nickname = ?, personal_goal = ?, daily_routine = ?, prefered_language = ? WHERE id = ?`;
+    const [result] = await pool.execute(query, [updatedLikes, updatedLocation, updatedNickname, updatedPersonalGoal, updatedDailyRoutine,updatedPreferedLanguage, id]);
     return { success: true, result };
   } catch (err) {
     console.error("Updating user profile failed:", err);

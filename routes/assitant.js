@@ -20,6 +20,7 @@ router.post("/chat", auth,async (req, res, next) => {
       location: result[0].location,
       personal_goal: result[0].personal_goal,
       daily_outline: result[0].daily_outline,
+      prefered_language: result[0].prefered_language,
     };
     const response = await handleChatting(message, {
       id: req.user.id,
@@ -57,6 +58,7 @@ router.post("/get_suggestion",auth,async (req,res,next)=>{
       location: result[0].location,
       personal_goal: result[0].personal_goal,
       daily_outline: result[0].daily_outline,
+      prefered_language: result[0].prefered_language,
     };
     const response = await getSuggestionModelResponse(hasSchedule,schedule,userProfileInfo,clientTime,clientDate);
     return res.status(200).json({
@@ -72,7 +74,7 @@ router.post("/survey",auth,async (req,res,next)=>{
     const {surveyHistory,nextStep,structuredAnswerHistory} = req.body;
     const response = await surveyModel(surveyHistory,nextStep,structuredAnswerHistory);
     if(response.surveyDone && response.finalStructuredAnswer){
-      const {nickname,likes,location,personalGoal,dailyRoutine} = response.finalStructuredAnswer;
+      const {nickname,likes,location,personalGoal,dailyRoutine,preferedLanguage} = response.finalStructuredAnswer;
       const {success} = await saveSurveyResult({
         id: req.user.id,
         nickname,
@@ -80,6 +82,7 @@ router.post("/survey",auth,async (req,res,next)=>{
         location,
         personalGoal,
         dailyRoutine,
+        preferedLanguage,
       });
       if(!success){
         throw new Error("Failed to save survey result.");
