@@ -3,6 +3,7 @@ import { auth } from "../middleware/auth.js";
 import { getUserSurveyResult,saveSurveyResult } from "../DB/users.js";
 import { handleChatting } from "../lib/handleChatting.js";
 import { getSuggestionModelResponse } from "../lib/ai/suggestionModel.js";
+import { googleSearchAgent } from "../lib/ai/googleSearchAgent.js";
 import { surveyModel } from "../lib/ai/surveyModel.js";
 
 const router = express.Router();
