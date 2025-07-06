@@ -5,8 +5,8 @@ import { generateJWT, verifyJWT } from "../lib/token.js";
 const router = express.Router();
 
 router.post("/check_token", (req, res, next) => {
-  const accessToken = req.cookies.accessToken;
-  const refreshToken = req.cookies.refreshToken;
+  const accessToken = req.headers.authorization?.split(" ")[1];
+  const refreshToken = req.body.refreshToken;
 
   if (!refreshToken) {
     res
@@ -27,11 +27,6 @@ router.post("/check_token", (req, res, next) => {
     });
     return;
   }
-
-  // const { id, email } = verifyJWT(refreshToken);
-
-  // console.log("id:", id);
-  // console.log("email:", email);
 
   res.status(200).json({ message: "Tokens exist.", accessToken: accessToken });
 });
