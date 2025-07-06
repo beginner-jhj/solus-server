@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -7,6 +8,7 @@ import scheduleRouter from "./routes/schedule.js";
 import assistantRouter from "./routes/assitant.js";
 
 const app = express();
+const port = process.env.PORT || 8000;
 
 app.use(
   cors({
@@ -32,6 +34,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(8000, () => {
-  console.log("Server is running on port 8000");
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
