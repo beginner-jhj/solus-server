@@ -8,24 +8,33 @@ router.post("/check_token", (req, res, next) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
   const refreshToken = req.body.refreshToken;
 
-  if (!refreshToken) {
+  try{
+    verifyJWT(refreshToken);
+  }catch(err){
     res
       .status(401)
       .json({ message: "refreshToken expired.", expiredToken: "refreshToken" });
-
     return;
   }
 
-  if (!accessToken && refreshToken) {
-    const { id, email } = verifyJWT(refreshToken);
-
-    const newAccessToken = generateJWT(id, email, "access");
-    res.status(200).json({
-      message: "accessToken expired.",
-      expiredToken: "accessToken",
-      accessToken: newAccessToken,
-    });
-    return;
+  try{
+    verifyJWT(accessToken);
+  }catch(err){
+    try{
+      const { id, email } = verifyJWT(refreshToken);
+      const newAccessToken = generateJWT(id, email, "access");
+      res.status(200).json({
+        message: "accessToken expired.",
+        expiredToken: "accessToken",
+        accessToken: newAccessToken,
+      });
+      return;
+    }catch(err){
+      res
+        .status(401)
+        .json({ message: "accessToken expired.", expiredToken: "accessToken" });
+      return;
+    }
   }
 
   res.status(200).json({ message: "Tokens exist.", accessToken: accessToken });
