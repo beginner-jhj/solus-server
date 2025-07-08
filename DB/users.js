@@ -50,8 +50,14 @@ export async function getUserProfileInfo(id) {
 
 export async function saveSurveyResult({ id, likes, location, nickname, personalGoal, dailyRoutine,preferedLanguage }) {
   const query = `UPDATE users SET likes = ?, location = ?, nickname = ?, personal_goal = ?, daily_routine = ?, prefered_language = ? WHERE id = ?`;
+  const likesToSave = likes || "";
+  const locationToSave = location || "";
+  const nicknameToSave = nickname || "";
+  const personalGoalToSave = personalGoal || "";
+  const dailyRoutineToSave = dailyRoutine || "";
+  const preferedLanguageToSave = preferedLanguage || "";
   try {
-    const [result] = await pool.execute(query, [likes, location, nickname, personalGoal, dailyRoutine,preferedLanguage, id]);
+    const [result] = await pool.execute(query, [likesToSave, locationToSave, nicknameToSave, personalGoalToSave, dailyRoutineToSave,preferedLanguageToSave, id]);
     return { success: true, result };
   } catch (err) {
     console.error("Saving survey result failed:", err);
