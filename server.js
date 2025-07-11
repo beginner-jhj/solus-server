@@ -12,7 +12,7 @@ const port = process.env.PORT || 8000;
 
 app.use(
   cors({
-    origin: "chrome-extension://fbpojdkmpoohglbimdjahihdcfonjkhc",
+    origin: ["chrome-extension://fbpojdkmpoohglbimdjahihdcfonjkhc","chrome-extension://dkcpnjjabccppnbpdcpfncklemnjimfn"],
     credentials: true,
   })
 );
