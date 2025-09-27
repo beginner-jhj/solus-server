@@ -9,13 +9,24 @@ import assistantRouter from "./routes/assitant.js";
 
 const app = express();
 const port = process.env.PORT || 8000;
+const allowedOrigins = [
+  "chrome-extension://fbpojdkmpoohglbimdjahihdcfonjkhc",
+  "chrome-extension://dkcpnjjabccppnbpdcpfncklemnjimfn"
+];
 
 app.use(
   cors({
-    origin: ["chrome-extension://fbpojdkmpoohglbimdjahihdcfonjkhc","chrome-extension://dkcpnjjabccppnbpdcpfncklemnjimfn"],
+    origin: function(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
